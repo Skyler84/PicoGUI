@@ -99,6 +99,7 @@ void ListWidget::setSelectedRow(size_t idx){
     if(w)
         w->setFocused(true);
     requiresRedraw();
+    requiresRelayout();
     
 }
 
@@ -111,21 +112,17 @@ void ListWidget::redraw(Graphics &g, bool){
     while(nextchild){
         child = nextchild;
         nextchild = child->getNextChild();
-        printf("[LWIDG] redraw() %p\n", child);
         // child->setFocused()
         auto cpos = child->getPos();
         auto csize = child->getSize();
         //check is within bounds
         if((cpos.x < mpos.x) || ((cpos.x + csize.w) > (mpos.x + msize.w)))
             continue;
-        printf("[LWIDG] if((%d < %d) || (%d > %d))\n", cpos.y, mpos.y, (cpos.y + csize.h), (mpos.y + msize.h));
         if((cpos.y < mpos.y) || ((cpos.y + csize.h) > (mpos.y + msize.h)))
             continue;
         
-        printf("[LWIDG] redraw() %p yes\n", child);
         child->redraw(g);
     }
-    printf("[LWIDG] redraw() done\n");
 }
 
 bool ListWidget::relayout(){
@@ -137,8 +134,28 @@ bool ListWidget::relayout(){
     Widget *child;
     if(!m_children)
         return false;
+
+    if(m_selectedRow >= 0 && m_selectedRow < m_vScroll){
+        m_vScroll = m_selectedRow;
+        //simple, set selected as first shown
+    }else if(m_selectedRow >= 0){
+        int yDiff = 0;
+
+        for(child = m_children, i = 0; i <= m_selectedRow && child; child = child->getNextChild(), i++){
+            if(i < m_vScroll)
+                continue;
+            yDiff += child->getRequiredSize().h;
+        }
+        for(child = m_children, i = 0; yDiff > getSize().h && i <= m_selectedRow && child; child = child->getNextChild(), i++){
+            if(i < m_vScroll)
+                continue;
+            yDiff -= child->getRequiredSize().h;
+            m_vScroll++;
+        }
+    }
     
-    for(child = m_children; i < m_vScroll && child; child = child->getNextChild()){
+    // get yOff for first shown element
+    for(child = m_children, i = 0; i < m_vScroll && child; child = child->getNextChild(), i){
         yOff -= child->getRequiredSize().h;
         ++i;
     }
