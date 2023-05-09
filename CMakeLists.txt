@@ -24,6 +24,7 @@ target_sources(${NAME} INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}/src/widgets/divider_widget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/widgets/list_widget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/widgets/text_widget.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/widgets/qrcode_widget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/drivers/button.cpp
 )
 
