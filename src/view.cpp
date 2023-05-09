@@ -77,6 +77,7 @@ void View::redraw(gui::Graphics&g, bool){
     }
     if(!childWidgets->needsRedrawing() && !childWidgets->childNeedsRedrawing())
         return;
+    clear(g);
     childWidgets->redraw(g);
     childWidgets->redrawDone();
 }

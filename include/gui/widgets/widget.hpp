@@ -21,6 +21,8 @@ namespace gui
 
     class Widget : public Drawable{
     public:
+        Widget():
+            Drawable{nullptr, {}} {}
         Widget(Drawable *parent, const gui::Rectangle& box):
             Drawable{parent, box} {}
         Widget(Drawable *parent, const gui::Point2& pos):

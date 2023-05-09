@@ -72,6 +72,7 @@ void ViewController::poll_event_loop(){
 
     if(current_view->needsRelayout() || current_view->childNeedsRelayout()){
         DEBUG_PRINTF("relayout-ing\n");
+        //keep relayouting until everything is stable
         while(current_view->relayout());
         current_view->relayoutDone();
     }
