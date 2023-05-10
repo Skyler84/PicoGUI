@@ -579,7 +579,7 @@ void QRCodeWidget::redraw(Graphics &g, bool){
     Point2 tl, br;
     bo += getPos();
     g.set_pen(255);
-    g.rectangle(pimoroni::Rect{getPos(), bo + Point2{getArea(), getArea()}});
+    g.rectangle(pimoroni::Rect{getPos(), getPos() + Point2{getArea(), getArea()}});
     for(int i = 0; i < size; i++){
         g.set_pen(i%2?255:0);
         tl = {6  , i  }; tl *= m_scale; tl += bo;
