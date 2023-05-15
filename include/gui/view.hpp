@@ -35,9 +35,10 @@ namespace gui
         }
         View *getChildView() const {return childView; }
         void setChildView(View* view) { 
-            printf("[VIEW] setChildView(%p)\n", view);
+            printf("[VIEW] (%p)->setChildView(%p)\n", this, view);
             childView = view; 
-            childView->setParent(this);
+            if(childView)
+                childView->setParent(this);
         }
 
         void closeView();
