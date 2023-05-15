@@ -3,7 +3,7 @@
 using namespace gui;
 
 ListWidget::ListWidget(Widget *parent, Rectangle r): 
-Widget(parent, r), m_selectedRow{0}, m_vScroll{0}, m_children{nullptr}{
+Widget(parent, r), m_selectedRow{-1}, m_vScroll{0}, m_children{nullptr}{
     setGrow(true);
 }
 
