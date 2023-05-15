@@ -16,36 +16,22 @@ Queue<MyButton::ButtonEvent> MyButton::event_queue{32};
 
 void gpio_event_string(char *buf, uint32_t events);
 
-bool MyButton::raw(){
-  if(polarity == Polarity::ACTIVE_LOW){
-    return !gpio_get(pin);
-  } else {
-    return gpio_get(pin);
-  }
-}
 
 MyButton *MyButton::get_button_on_pin(uint pin){
-  MyButton **btnList = &firstButton;
-  while(MyButton* b = *btnList) {
-    if(b->get_pin() == pin)
-      return b;
-    btnList = &(*btnList)->nextButton;
-  }
-  return nullptr;
+  return dynamic_cast<MyButton*>(getSioPin(pin));
 }
 
-void MyButton::button_interrupt(uint gpio, uint32_t flags)
+void MyButton::onInterrupt(uint32_t flags)
 {
-  MyButton *button = MyButton::get_button_on_pin(gpio);
   static char event_str[128];
   // Put the GPIO event(s) that just happened into event_str
   // so we can print it
   gpio_event_string(event_str, flags);
   if(flags == 0b1100)
     return; //do nothing as it's a bounce
-  button->set_alarm(DEBOUNCE_TIME);
+  this->set_alarm(DEBOUNCE_TIME);
 
-  DEBUG_PRINTF("GPIO %d %s\n", gpio, event_str);
+  DEBUG_PRINTF("GPIO %d %s\n", get_pin(), event_str);
 }
 
 int64_t MyButton::button_alarm_callback(alarm_id_t alarm_id, void* env){

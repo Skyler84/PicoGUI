@@ -26,6 +26,7 @@ target_sources(${NAME} INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}/src/widgets/text_widget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/widgets/qrcode_widget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/drivers/button.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/drivers/rp2040/sio_pin.cpp
 )
 
 target_include_directories(${NAME}_headers INTERFACE
