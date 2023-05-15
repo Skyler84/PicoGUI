@@ -4,72 +4,73 @@
 
 namespace gui
 {
-    class HDividerWidget : public Widget{
+    /* abscract */ class DividerWidget : public Widget{
     public:
-    HDividerWidget(Widget *parent = nullptr, Rectangle r = {}) : Widget(parent, r){
-        setGrow(true);
-     }
-    ~HDividerWidget(){};
-    size_t addWidget(Widget *w){
-        printf("[HDWIDG] addWidget(%p)\n", w);
-        w->setParent(this);
-        size_t i = 0;
-        if(m_children){
-            printf("1\n");
-            Widget *child = m_children;
-            printf("1a\n");
-            ++i;
-            printf("1aa\n");
-            while(child->getNextChild()){
-                printf("2\n");
-                ++i;
-                child = child->getNextChild();
-            }
-            // printf("3\n");
-            child->setNextChild(w);
-        }else{
-            printf("4\n");
-            m_children = w;
+        DividerWidget(Widget *parent = nullptr, Rectangle r = {}) : Widget(parent, r){
+            setGrow(true);
         }
-        requiresRelayout();
-        printf("[HDWIDG] addWidget() done\n");
-        return i;
-    }
+        uint getSpacing() const { return m_spacing; }
+        uint getGap() const { return m_separator + 2*m_spacing; }
+        uint getSeparator() const { return m_separator; }
+        void setSpacing(uint s) { m_spacing = s; }
+        void setSeparator(uint s) { m_separator = s; }
+
+
+        size_t addWidget(Widget *w){
+            printf("[DIV] addWidget(%p)\n", w);
+            w->setParent(this);
+            size_t i = 0;
+            if(m_children){
+                Widget *child = m_children;
+                ++i;
+                while(child->getNextChild()){
+                    ++i;
+                    child = child->getNextChild();
+                }
+                child->setNextChild(w);
+            }else{
+                m_children = w;
+            }
+            requiresRelayout();
+            printf("[DIV] addWidget() done\n");
+            return i;
+        }
+        Widget *removeWidget(Widget *w){
+            Widget *ws = m_children;
+            while(ws && ws != w){
+                ws = ws->getNextChild();
+            }
+            if(ws)
+                requiresRelayout();
+            return ws;
+        }
+
+
+    protected:
+        // virtual Point2 convert(Point2) = 0;
+        // virtual Point2 convert(Size2) = 0;
+        Widget *m_children = nullptr;
+    private:
+        uint m_spacing = 1;
+        uint m_separator = 1;
+    };
+    class HDividerWidget : public DividerWidget{
+    public:
+        HDividerWidget(Widget *parent = nullptr, Rectangle r = {}) : DividerWidget(parent, r){ }
+        ~HDividerWidget(){};
     protected:
         void redraw(Graphics&, bool) override;
         bool relayout() override;
     private:
-    Widget *m_children = nullptr;
     };
 
-    class VDividerWidget : public Widget{
+    class VDividerWidget : public DividerWidget{
     public:
-    VDividerWidget(Widget *parent = nullptr, Rectangle r = {}) : Widget(parent, r){
-        setGrow(true);
-    }
-    ~VDividerWidget(){};
-    size_t addWidget(Widget *w){
-        printf("[VDWIDG] addWidget(%p)\n", w);
-        w->setParent(this);
-        size_t i = 0;
-        if(m_children){
-            Widget *child = m_children;
-            ++i;
-            while(child->getNextChild()){
-                ++i;
-                child = child->getNextChild();
-            }
-            child->setNextChild(w);
-        }else{
-            m_children = w;
-        }
-        requiresRelayout();
-        return i;
-    }
+        VDividerWidget(Widget *parent = nullptr, Rectangle r = {}) : DividerWidget(parent, r){ }
+        ~VDividerWidget(){};
     protected:
         void redraw(Graphics&, bool) override;
         bool relayout() override;
     private:
-    Widget *m_children = nullptr;
     };
 } // namespace gui

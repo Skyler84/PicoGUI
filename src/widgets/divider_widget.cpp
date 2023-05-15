@@ -3,10 +3,15 @@
 using namespace gui;
 
 void VDividerWidget::redraw(Graphics &graphics, bool){
+    printf("[VDWIDG] redraw()\n");
     Widget *w = m_children;
     while(w){
         w->redraw(graphics);
         w->redrawDone();
+        graphics.set_pen(255);
+        if(w->getNextChild() && getSeparator()){
+            graphics.rectangle({{getPos().x+1, w->getPos().y+w->getSize().h + getSpacing()}, {getPos().x+getSize().w-1, w->getPos().y+w->getSize().h + getSpacing()+getSeparator()}});
+        }
         w = w->getNextChild();
     }
 }
@@ -18,11 +23,14 @@ bool VDividerWidget::relayout(){
     Size2 rs{};
 
     int numGrowing = 0;
+    if(m_children)
+        rs.h -= getGap();
     for(Widget *child = m_children; child; child = child->getNextChild()){
         rs.w = std::max(rs.w, child->getRequiredSize().w);
         rs.h += child->getRequiredSize().h;
         if(child->canGrow())
             numGrowing++;
+        rs.h += getGap();
     }
     //if size requirements have changed, stop here and come back later
     if(setRequiredSize(rs))
@@ -50,7 +58,7 @@ bool VDividerWidget::relayout(){
             child->needsRelayout()) && 
             child->relayout())
             return true;
-        yOff += size.h;
+        yOff += size.h + getGap();
     }
     relayoutDone();
     printf("[VDWIDG] relayout() {%d,%d}\n", getSize().w, getSize().h);
@@ -63,6 +71,10 @@ void HDividerWidget::redraw(Graphics &graphics, bool){
     while(w){
         w->redraw(graphics);
         w->redrawDone();
+        graphics.set_pen(255);
+        if(w->getNextChild()){
+            graphics.rectangle({{w->getPos().x + w->getSize().w + getSpacing(), getPos().y + 1}, {w->getPos().x + w->getSize().w + getSpacing()+getSeparator(), getPos().y + getSize().h - 1}});
+        }
         w = w->getNextChild();
     }    
 }
@@ -75,11 +87,14 @@ bool HDividerWidget::relayout(){
     Size2 rs{};
 
     int numGrowing = 0;
+    if(m_children)
+        rs.w -= getGap();
     for(Widget *child = m_children; child; child = child->getNextChild()){
         rs.h = std::max(rs.h, child->getRequiredSize().h);
         rs.w += child->getRequiredSize().w;
         if(child->canGrow())
             numGrowing++;
+        rs.w += getGap();
     }
     //if size requirements have changed, stop here and come back later
     if(setRequiredSize(rs))
@@ -107,7 +122,7 @@ bool HDividerWidget::relayout(){
             child->needsRelayout()) && 
             child->relayout())
             return true;
-        xOff += size.w;
+        xOff += size.w + getGap();
     }
     relayoutDone();
     printf("[HDWIDG] relayout() {%d,%d}\n", getSize().w, getSize().h);
