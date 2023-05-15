@@ -1,5 +1,7 @@
 #include "gui/view.hpp"
 
+#include "drivers/button.hpp"
+#include "buttons.hpp"
 #include "pico/time.h"
 
 #define DEBUG_PRINTF(...) printf("[VIEW] " __VA_ARGS__)
@@ -47,6 +49,11 @@ int64_t View::timer_handler(alarm_id_t id, void* data){
         DEBUG_PRINTF("Failed to add timer to event queue\n");
     }
     return 0;
+}
+
+void View::handleInput(InputEvent ev){
+    if(ev.type == InputEvent::ButtonHold && ((MyButton*)ev.data)->get_pin() == Buttons::B)
+        close();
 }
 
 bool View::close(){
