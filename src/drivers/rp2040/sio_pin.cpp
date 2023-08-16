@@ -4,7 +4,7 @@ using namespace RP2040;
 
 SioPin *SioPin::s_firstPin = nullptr;
 
-SioPin::SioPin(uint pin, Polarity pol) : pin{pin}, polarity{pol} {
+SioPin::SioPin(uint pin, Polarity pol) : GpioPin{pin, pol} {
     SioPin **pinList = &s_firstPin;
     while(*pinList) pinList = &(*pinList)->m_nextPin;
     *pinList = this;
@@ -17,20 +17,8 @@ SioPin::~SioPin(){
     // *pinList = this;
 }
 
-bool SioPin::raw(){
-  if(polarity == Polarity::ACTIVE_LOW){
-    return !gpio_get(pin);
-  } else {
-    return gpio_get(pin);
-  }
-}
-
-void SioPin::put(bool v){
-  if(polarity == Polarity::ACTIVE_LOW){
-    gpio_put(pin, !v);
-  } else {
-    gpio_put(pin, v);
-  }
+void SioPin::init(){
+  gpio_set_function(get_pin(), GPIO_FUNC_SIO);
 }
 
 SioPin *SioPin::getSioPin(uint pin){
