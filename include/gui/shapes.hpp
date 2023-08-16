@@ -8,6 +8,15 @@ namespace gui
     //     int x, y;
     // };
     using Point2 = pimoroni::Point;
+    inline static Point2 operator *(const Point2&p, int s) {
+        Point2 p2{p.x*s, p.y*s};
+        return p2;
+    }
+    inline static Point2 &operator *=(Point2&p, int s) {
+        p.x *= s;
+        p.y *= s;
+        return p;
+    }
     struct Size2{
         int w,h;
         bool operator == (const Size2 &other){

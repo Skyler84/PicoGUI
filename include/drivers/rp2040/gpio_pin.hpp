@@ -12,7 +12,7 @@ namespace RP2040
     class GpioPin{
     public:
         GpioPin(uint pin, Polarity pol);
-        virtual void init();
+        virtual void init() = 0;
         bool raw();
         void put(bool val);
         void toggle();
