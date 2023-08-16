@@ -38,18 +38,21 @@ jobs:
         cmake .. -DPIMORONI_PICO_FETCH_FROM_GIT=ON -DPICO_SDK_FETCH_FROM_GIT=ON
         cmake --build .
         popd
+        popd
     - name: Upload examples
       uses: actions/upload-artifact@v3
       with:
         name: Examples
         path: |
-          build/examples/*.bin
-          build/examples/*.uf2
-          build/examples/*.hex
-          build/examples/*.elf
+          main/build/examples/*.bin
+          main/build/examples/*.uf2
+          main/build/examples/*.hex
+          main/build/examples/*.elf
     - name: Upload libs
       uses: actions/upload-artifact@v3
       with:
         name: Libs
-        path: '**/*.a'
+        path: |
+          main/build/'**/*.a'
+          !**/_deps/
         
