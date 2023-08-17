@@ -34,8 +34,25 @@ jobs:
       run: |
         pushd main
         mkdir build
-        cd build
+        pushd build
         cmake .. -DPIMORONI_PICO_FETCH_FROM_GIT=ON -DPICO_SDK_FETCH_FROM_GIT=ON
         cmake --build .
         popd
+        popd
+    - name: Upload examples
+      uses: actions/upload-artifact@v3
+      with:
+        name: Examples
+        path: |
+          main/build/examples/*.bin
+          main/build/examples/*.uf2
+          main/build/examples/*.hex
+          main/build/examples/*.elf
+    - name: Upload libs
+      uses: actions/upload-artifact@v3
+      with:
+        name: Libs
+        path: |
+          main/build/'**/*.a'
+          !**/_deps/
         
