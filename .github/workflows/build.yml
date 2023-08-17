@@ -34,7 +34,7 @@ jobs:
       run: |
         pushd main
         mkdir build
-        cd build
+        pushd build
         cmake .. -DPIMORONI_PICO_FETCH_FROM_GIT=ON -DPICO_SDK_FETCH_FROM_GIT=ON
         cmake --build .
         popd
