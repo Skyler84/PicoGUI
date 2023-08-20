@@ -18,7 +18,6 @@ SioPin::~SioPin(){
 }
 
 void SioPin::init(){
-  // gpio_set_function(get_pin(), GPIO_FUNC_SIO);
   gpio_init(get_pin());
   gpio_set_pulls(get_pin(), 
     getPolarity() == Polarity::ACTIVE_LOW, 
