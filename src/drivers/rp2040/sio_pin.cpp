@@ -18,7 +18,11 @@ SioPin::~SioPin(){
 }
 
 void SioPin::init(){
-  gpio_set_function(get_pin(), GPIO_FUNC_SIO);
+  gpio_init(get_pin());
+  gpio_set_pulls(get_pin(), 
+    getPolarity() == Polarity::ACTIVE_LOW, 
+    getPolarity() == Polarity::ACTIVE_HIGH);
+  gpio_set_irq_enabled_with_callback(get_pin(), GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE, true, SioPin::interrupt);
 }
 
 SioPin *SioPin::getSioPin(uint pin){
