@@ -4,6 +4,7 @@
 #include "pico/stdio.h"
 #include "hardware/watchdog.h"
 #include "pico/time.h"
+#include "pico/bootrom.h"
 
 #include "drivers/button.hpp"
 #include "buttons.hpp"
@@ -40,6 +41,12 @@ void wait_stdio_usb_connected_timeout(long timeout_ms, long startup_delay_ms){
 int main(){
 
   stdio_init_all();
+
+  if(watchdog_enable_caused_reboot()) {
+    reset_usb_boot(0,0);
+  }
+
+  watchdog_enable(200, 1);
 
   wait_stdio_usb_connected_timeout(2500, 500);
 
