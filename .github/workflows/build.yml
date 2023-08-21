@@ -53,6 +53,6 @@ jobs:
       with:
         name: Libs
         path: |
-          main/build/'**/*.a'
+          main/build/**/*.a
           !**/_deps/
         
