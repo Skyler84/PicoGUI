@@ -23,7 +23,7 @@ MyButton buttons[4] = {
 
 extern "C" bool tud_connected();
 
-void wait_stdio_usb_connected_timeout(long timeout_ms){
+void wait_stdio_usb_connected_timeout(long timeout_ms, long startup_delay_ms){
   if(!tud_connected())
     return;
   absolute_time_t timeout = make_timeout_time_ms(timeout_ms);
@@ -31,19 +31,17 @@ void wait_stdio_usb_connected_timeout(long timeout_ms){
   while(!stdio_usb_connected() && absolute_time_diff_us(get_absolute_time(), timeout) > 0){
     watchdog_update();
   }
-  if(stdio_usb_connected)
-    sleep_ms(1000);
+  timeout = make_timeout_time_ms(startup_delay_ms);
+  while(stdio_usb_connected() && absolute_time_diff_us(get_absolute_time(), timeout) > 0){
+    watchdog_update();
+  } 
 }
 
 int main(){
 
   stdio_init_all();
 
-  wait_stdio_usb_connected_timeout(2500);
-
-  while(!(tud_connected() && stdio_usb_connected())){
-    watchdog_update();
-  }
+  wait_stdio_usb_connected_timeout(2500, 500);
 
   MyButton::init_all();
   auto &controller = ViewController::get();
