@@ -54,9 +54,13 @@ jobs:
         name: Libs
         path: |
           main/build/**/*.a
-          main/include/**.h
-          main/include/**.hpp
+          main/include/*.h
+          main/include/**/*.h
+          main/include/**/*.hpp
+          main/include/*.hpp
           main/examples/**/include/**.h
+          main/examples/**/include/**/*.h
           main/examples/**/include/**.hpp
+          main/examples/**/include/**/*.hpp
           !**/_deps/
         
