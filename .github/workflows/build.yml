@@ -14,6 +14,8 @@ jobs:
       uses: actions/checkout@v3
       with:
         path: main
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
     - name: cache compiler
       id: cache-compiler
       uses: actions/cache@v3
@@ -32,12 +34,14 @@ jobs:
         echo "${{ github.workspace }}/gcc-arm-none-eabi-9-2019-q4-major/bin" >> $GITHUB_PATH
     - name: cmake
       run: |
-        pushd main
-        mkdir build
-        pushd build
-        cmake .. -DPIMORONI_PICO_FETCH_FROM_GIT=ON -DPICO_SDK_FETCH_FROM_GIT=ON
-        cmake --build .
-        popd
+        mkdir -p main/build
+        pushd main/build
+          cmake .. \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+            -DPIMORONI_PICO_FETCH_FROM_GIT=ON \
+            -DPICO_SDK_FETCH_FROM_GIT=ON
+          cmake --build .
         popd
     - name: Upload examples
       uses: actions/upload-artifact@v3
