@@ -24,12 +24,10 @@ void SioPin::init() {
   printf("SioPin::init() %d, %s\n", pin, getDirection()==GPIO_IN?"IN":"OUT");
     GpioPin::init();
     if(getDirection() == GPIO_IN){
-        if (getPolarity() == Polarity::ACTIVE_LOW) {
-            gpio_pull_up(pin);
-        } else {
-            gpio_pull_down(pin);
-        }
-        gpio_set_irq_enabled_with_callback(pin, 0xc, true, SioPin::interrupt);
+        gpio_set_pulls(get_pin(), 
+          getPolarity() == Polarity::ACTIVE_LOW, 
+          getPolarity() == Polarity::ACTIVE_HIGH);
+        gpio_set_irq_enabled_with_callback(pin, GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE, true, SioPin::interrupt);
     } else {
         gpio_set_drive_strength(pin, GPIO_DRIVE_STRENGTH_2MA);
         put(0);

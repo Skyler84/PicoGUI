@@ -18,7 +18,7 @@ void gpio_event_string(char *buf, uint32_t events);
 
 
 MyButton *MyButton::get_button_on_pin(uint pin){
-  return dynamic_cast<MyButton*>(getSioPin(pin));
+  return static_cast<MyButton*>(getSioPin(pin));
 }
 
 void MyButton::onInterrupt(uint32_t flags)

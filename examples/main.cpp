@@ -2,6 +2,9 @@
 #include "font6mono_data.hpp"
 #include "gui/widgets/qrcode_widget.hpp"
 #include "pico/stdio.h"
+#include "hardware/watchdog.h"
+#include "pico/time.h"
+#include "pico/bootrom.h"
 
 #include "drivers/button.hpp"
 #include "buttons.hpp"
@@ -21,24 +24,31 @@ MyButton buttons[4] = {
 
 extern "C" bool tud_connected();
 
-void wait_stdio_usb_connected_timeout(long timeout_ms){
+void wait_stdio_usb_connected_timeout(long timeout_ms, long startup_delay_ms){
   if(!tud_connected())
     return;
   absolute_time_t timeout = make_timeout_time_ms(timeout_ms);
 
   while(!stdio_usb_connected() && absolute_time_diff_us(get_absolute_time(), timeout) > 0){
-    // watchdog_update();
-    tight_loop_contents();
+    watchdog_update();
   }
-  if(stdio_usb_connected)
-    sleep_ms(1000);
+  timeout = make_timeout_time_ms(startup_delay_ms);
+  while(stdio_usb_connected() && absolute_time_diff_us(get_absolute_time(), timeout) > 0){
+    watchdog_update();
+  } 
 }
 
 int main(){
 
   stdio_init_all();
 
-  wait_stdio_usb_connected_timeout(2500);
+  if(watchdog_enable_caused_reboot()) {
+    reset_usb_boot(0,0);
+  }
+
+  watchdog_enable(200, 1);
+
+  wait_stdio_usb_connected_timeout(2500, 500);
 
   MyButton::init_all();
   auto &controller = ViewController::get();
@@ -50,5 +60,6 @@ int main(){
 
   while(true) {
     controller.poll_event_loop();
+    watchdog_update();
   }
 }

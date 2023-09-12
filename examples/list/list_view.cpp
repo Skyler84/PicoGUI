@@ -14,7 +14,7 @@ ListView::ListView(gui::View *parent) : View(parent){
 }
 
 void ListView::handleInput(InputEvent ev){
-    bool handled = false;
+  bool handled = false;
   MyButton *b = (MyButton*)ev.data;
   switch(ev.type){
     case InputEvent::ButtonClick:{

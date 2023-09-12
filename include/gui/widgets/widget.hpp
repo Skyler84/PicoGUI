@@ -62,6 +62,12 @@ namespace gui
             // assert(w != this);
             m_nextChild = w; 
         }
+        void setUserData(void *d) {
+            m_userData = d;
+        }
+        void *getUserData() const {
+            return m_userData;
+        }
     protected:
         virtual void onFocusChange(){}
     private:

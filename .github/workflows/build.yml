@@ -1,0 +1,70 @@
+name: Build
+
+on:
+  push: 
+    branches: [ master ]
+  pull_request: 
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps: 
+    - name: checkout
+      uses: actions/checkout@v3
+      with:
+        path: main
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+    - name: cache compiler
+      id: cache-compiler
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-gcc-arm
+      with:
+        path: ${{ github.workspace }}/gcc-arm-none-eabi-9-2019-q4-major
+        key: gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux
+    - name: download compiler
+      if: steps.cache-compiler.outputs.cache-hit != 'true'
+      run: |
+        wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2019q4/RC2.1/gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2
+        tar xjf gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2
+    - name: enable compiler
+      run: |
+        echo "${{ github.workspace }}/gcc-arm-none-eabi-9-2019-q4-major/bin" >> $GITHUB_PATH
+    - name: cmake
+      run: |
+        mkdir -p main/build
+        pushd main/build
+          cmake .. \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+            -DPIMORONI_PICO_FETCH_FROM_GIT=ON \
+            -DPICO_SDK_FETCH_FROM_GIT=ON
+          cmake --build .
+        popd
+    - name: Upload examples
+      uses: actions/upload-artifact@v3
+      with:
+        name: Examples
+        path: |
+          main/build/examples/*.bin
+          main/build/examples/*.uf2
+          main/build/examples/*.hex
+          main/build/examples/*.elf
+    - name: Upload libs
+      uses: actions/upload-artifact@v3
+      with:
+        name: Libs
+        path: |
+          main/build/**/*.a
+          main/include/*.h
+          main/include/**/*.h
+          main/include/**/*.hpp
+          main/include/*.hpp
+          main/examples/**/include/**.h
+          main/examples/**/include/**/*.h
+          main/examples/**/include/**.hpp
+          main/examples/**/include/**/*.hpp
+          !**/_deps/
+        
