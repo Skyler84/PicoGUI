@@ -11,10 +11,10 @@
 using namespace gui;
 
 MyButton buttons[4] = {
-  MyButton(Buttons::A, MyButton::ACTIVE_LOW, 0),
-  MyButton(Buttons::B, MyButton::ACTIVE_LOW, 0),
-  MyButton(Buttons::X, MyButton::ACTIVE_LOW, 0),
-  MyButton(Buttons::Y, MyButton::ACTIVE_LOW, 0),
+  MyButton(Buttons::A, Polarity::ACTIVE_LOW, 0),
+  MyButton(Buttons::B, Polarity::ACTIVE_LOW, 0),
+  MyButton(Buttons::X, Polarity::ACTIVE_LOW, 0),
+  MyButton(Buttons::Y, Polarity::ACTIVE_LOW, 0),
 };
 
 

@@ -13,6 +13,7 @@ namespace gui
         void setFontSize(int scale);
         void setFontColor(gui::Color c);
         void setFont(const gui::Font*);
+        void setScroll(bool);
         // void setHighlight(bool h) { m_isHighlighted = h; }
         void redraw(Graphics&, bool = false);
     protected:

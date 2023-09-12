@@ -1,9 +1,71 @@
 #include "gui/widgets/divider_widget.hpp"
 
+
+#define PRINT_SIZE(size) printf("[DIV] (%s) {%d,%d}\n", #size, size.w, size.h)
+
+
 using namespace gui;
 
+// bool DividerWidget::relayout(){
+//     Size2 offset{};
+//     Size2 rs{};
+
+//     auto printSize = [](const Size2 s) { printf("[DIV] {%d,%d}\n", s.w, s.h); };
+
+//     int numGrowing = 0;
+//     Size2 gap{};
+//     gap = accumulate({0,0}, {-getGap(), -getGap()});
+//     PRINT_SIZE(offset);
+//     PRINT_SIZE(gap);
+//     if(m_children)
+//         rs = accumulate(rs, gap);
+//     gap = {-gap.w, -gap.h};
+//     PRINT_SIZE(gap);
+    
+//     for(Widget *child = m_children; child; child = child->getNextChild()){
+//         rs = accumulate(rs, child->getRequiredSize());
+//         if(growable(*child))
+//             numGrowing++;
+//         rs = accumulate(rs, gap);
+//     }
+//     //if size requirements have changed, stop here and come back later
+//     if(setRequiredSize(rs))
+//         return true;
+
+//     Size2 excessSize = excess(rs);
+    
+//     //usable size we have
+//     rs = getSize();
+//     for(Widget *child = m_children; child; child = child->getNextChild()){
+//         Point2 pos{
+//             getPos().x+offset.w,
+//             getPos().y+offset.h,
+//         };
+//         Size2 addSize;
+//         if(growable(*child)){
+//             addSize = {excessSize.w/numGrowing, excessSize.h/numGrowing};
+//             printf("grow (%p) {%d,%d} %d {%d,%d}\n", child, excessSize.w, excessSize.h, numGrowing, addSize.w, addSize.h);
+//             numGrowing--;
+//             excessSize = {excessSize.w - addSize.w, excessSize.h - addSize.h};
+//         }
+//         Size2 size = childSize(offset, addSize, *child);
+//         PRINT_SIZE(size);
+//         child->setBox({pos, size});
+//         if((child->needsRelayout() || child->childNeedsRelayout()) && 
+//             child->relayout()){
+//             printf("relayout (%p) changed\n", child);
+//             return true;
+//         }
+//         offset = accumulate(offset, gap);
+//         PRINT_SIZE(offset);
+//     }
+//     relayoutDone();
+//     printf("[VDWIDG] relayout() {%d,%d} done\n", getSize().w, getSize().h);
+//     return false;
+// }
+
 void VDividerWidget::redraw(Graphics &graphics, bool){
-    printf("[VDWIDG] redraw()\n");
+    // printf("[VDWIDG] redraw()\n");
     Widget *w = m_children;
     while(w){
         w->redraw(graphics);
@@ -28,7 +90,7 @@ bool VDividerWidget::relayout(){
     for(Widget *child = m_children; child; child = child->getNextChild()){
         rs.w = std::max(rs.w, child->getRequiredSize().w);
         rs.h += child->getRequiredSize().h;
-        if(child->canGrow())
+        if(child->canGrowH())
             numGrowing++;
         rs.h += getGap();
     }
@@ -44,9 +106,9 @@ bool VDividerWidget::relayout(){
             getPos().y+yOff
         };
         int addHeight = 0;
-        if(child->canGrow()){
+        if(child->canGrowH()){
             addHeight = excessHeight/numGrowing;
-            printf("grow %d %d %d\n", excessHeight, numGrowing, addHeight);
+            printf("grow (%p) %d %d %d\n", child, excessHeight, numGrowing, addHeight);
             numGrowing--;
             excessHeight -= addHeight;
         }
@@ -55,18 +117,20 @@ bool VDividerWidget::relayout(){
             std::min(getSize().h - yOff, child->getRequiredSize().h + addHeight)
         };
         if((child->setBox({pos, size}) ||
-            child->needsRelayout()) && 
-            child->relayout())
+            child->needsRelayout() || child->childNeedsRelayout()) && 
+            child->relayout()){
+            printf("relayout (%p) changed\n", child);
             return true;
+        }
         yOff += size.h + getGap();
     }
     relayoutDone();
-    printf("[VDWIDG] relayout() {%d,%d}\n", getSize().w, getSize().h);
+    printf("[VDWIDG] relayout() {%d,%d} done\n", getSize().w, getSize().h);
     return false;
 }
 
 void HDividerWidget::redraw(Graphics &graphics, bool){
-    printf("[HDWIDG] redraw()\n");
+    // printf("[HDWIDG] redraw()\n");
     Widget *w = m_children;
     while(w){
         w->redraw(graphics);

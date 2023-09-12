@@ -5,6 +5,9 @@ class ViewController;
 }
 #include "gui/view.hpp"
 #include "gui/common.hpp"
+#include "gui/widgets/divider_widget.hpp"
+#include "gui/widgets/spacer_widget.hpp"
+#include "gui/widgets/text_widget.hpp"
 
 namespace gui{
 
@@ -29,5 +32,11 @@ namespace gui{
         gui::Graphics graphics;
         View *current_view = nullptr;
         View *next_view = nullptr;
+        struct{
+            VDividerWidget div;
+            HDividerWidget bar;
+            SpacerWidget sp;
+            TextWidget txt;
+        }ui;
     };
 } // namespace gui

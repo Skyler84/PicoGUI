@@ -28,17 +28,19 @@ namespace gui
         int start_timer(long timeout_us);
 
         View *getParentView() const {
-            return static_cast<View*>(getParent()); 
+            // return static_cast<View*>(getParent()); 
+            return parentView;
         }
         void setParentView(View *v) {
-            this->setParent(v);
+            // this->setParent(v);
+            parentView = v;
         }
         View *getChildView() const {return childView; }
         void setChildView(View* view) { 
             printf("[VIEW] (%p)->setChildView(%p)\n", this, view);
             childView = view; 
             if(childView)
-                childView->setParent(this);
+                childView->setParentView(this);
         }
 
         void closeView();
@@ -60,7 +62,7 @@ namespace gui
         static int64_t timer_handler(alarm_id_t, void *data);
 
 
-        View *childView;
+        View *childView, *parentView;
         Widget *childWidgets = nullptr;
         Color m_backgroundColor;
 
