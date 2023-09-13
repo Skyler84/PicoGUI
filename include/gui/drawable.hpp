@@ -17,10 +17,24 @@ namespace gui
         const Size2& getSize() const { return m_box.size; }
         const Size2& getRequiredSize() const { return m_requiredSize; }
         bool canGrow() const { return m_grow; }
+        bool canGrowH() const { return m_growH; }
+        bool canGrowV() const { return m_growV; }
         void setGrow(bool grow) {
             if(m_grow == grow)
                 return;
             m_grow = grow;
+            requiresRelayout();
+         }
+        void setGrowH(bool grow) {
+            if(m_growH == grow)
+                return;
+            m_growH = grow;
+            requiresRelayout();
+         }
+        void setGrowV(bool grow) {
+            if(m_growV == grow)
+                return;
+            m_growV = grow;
             requiresRelayout();
          }
 
@@ -51,7 +65,10 @@ namespace gui
          * returns false on success
          * returns true if size requirements changed!
         */
-        virtual bool relayout(){ return false; };
+        virtual bool relayout(){ 
+            printf("default relayout (%p)\n", this);
+            return false; 
+        };
         void redrawDone() { m_needsRedrawing = false; m_childNeedsRedrawing = false;}
         void relayoutDone() { 
             m_needsRelayout = false; 
@@ -107,6 +124,7 @@ namespace gui
         Rectangle m_box{};
         Size2 m_requiredSize{};
         bool m_grow = false;
+        bool m_growH = false, m_growV = false;
         
     };
 } // namespace gui

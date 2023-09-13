@@ -42,20 +42,21 @@ int64_t MyButton::button_alarm_callback(alarm_id_t alarm_id, void* env){
   bool val = button->raw();
   bool changed = val != button->last_state;
   button->last_state = val;
+  absolute_time_t time = get_absolute_time();
   if(changed){
     if(val){
       //pressed
       DEBUG_PRINTF("Pressed\n");
-      event_queue.try_add(ButtonEvent{ButtonEventType::Pressed, button});
+      event_queue.try_add(ButtonEvent{ButtonEventType::Pressed, time, button});
       DEBUG_PRINTF("Alarm rescheduled for 1s\n");
       return button->hold_time*1000;
     }else{
       //released
       DEBUG_PRINTF("Released\n");
-      event_queue.try_add(ButtonEvent{ButtonEventType::Released, button});
+      event_queue.try_add(ButtonEvent{ButtonEventType::Released, time, button});
       if(!button->held){
         DEBUG_PRINTF("Clicked\n");
-        event_queue.try_add(ButtonEvent{ButtonEventType::Clicked, button});
+        event_queue.try_add(ButtonEvent{ButtonEventType::Clicked, time, button});
       }
     }
     button->held = false;
@@ -64,11 +65,11 @@ int64_t MyButton::button_alarm_callback(alarm_id_t alarm_id, void* env){
     if(!button->held){
       DEBUG_PRINTF("Held\n");
       button->held = true;
-      event_queue.try_add(ButtonEvent{ButtonEventType::Held, button});
+      event_queue.try_add(ButtonEvent{ButtonEventType::Held, time, button});
     }
     if(button->repeat_time){
       DEBUG_PRINTF("Repeat Clicked\n");
-      event_queue.try_add(ButtonEvent{ButtonEventType::RepeatClicked, button});
+      event_queue.try_add(ButtonEvent{ButtonEventType::RepeatClicked, time, button});
       DEBUG_PRINTF("Alarm rescheduled for 0.2s\n");
       return button->repeat_time*1000;
     }

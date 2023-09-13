@@ -4,7 +4,8 @@
 #include "buttons.hpp"
 #include "pico/time.h"
 
-#define DEBUG_PRINTF(...) printf("[VIEW] " __VA_ARGS__)
+// #define DEBUG_PRINTF(...) printf("[VIEW] " __VA_ARGS__)
+#define DEBUG_PRINTF(...) 
 
 using namespace gui;
 
@@ -73,19 +74,14 @@ void View::setWidget(gui::Widget *w) {
     printf("d\n");
 }
 
-void View::redraw(gui::Graphics&g, bool){
-    if(!childWidgets)
-        return;
-    if(needsRedrawing()){
+void View::redraw(gui::Graphics&g, bool force){
+    if(force || needsRedrawing()){
         clear(g);
-        childWidgets->redraw(g);
-        childWidgets->redrawDone();
-        return;
+        force = true;
     }
-    if(!childWidgets->needsRedrawing() && !childWidgets->childNeedsRedrawing())
+    if(!force && !childWidgets->needsRedrawing() && !childWidgets->childNeedsRedrawing())
         return;
-    clear(g);
-    childWidgets->redraw(g);
+    childWidgets->redraw(g, force);
     childWidgets->redrawDone();
 }
 

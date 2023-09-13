@@ -27,6 +27,7 @@ public:
 
   struct ButtonEvent{
     ButtonEventType type;
+    absolute_time_t event_time;
     MyButton *button;
   };
 

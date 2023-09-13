@@ -6,7 +6,7 @@ using namespace gui;
 
 TextWidget::TextWidget(Widget *parent, const Point2 &pos) : 
 Widget(parent, pos){
-    m_font = &font6mono;    
+    m_font = &font6;    
     setText("");
     setFontSize(1);
     setFontColor(255);
@@ -37,7 +37,7 @@ void TextWidget::setFont(const gui::Font *font){
 }
 
 void TextWidget::redraw(Graphics& graphics, bool){
-    // printf("[TWIDG] redraw() %p focus %d\n", this, hasFocus());
+    printf("[TWIDG] redraw() %p focus %d, *%s*\n", this, hasFocus(), m_textContent.c_str());
     if(hasFocus()){
         clear(graphics, this->m_textColor);
         graphics.set_pen(ViewController::get().getBackgroundColor());

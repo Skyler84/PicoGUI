@@ -37,6 +37,8 @@ namespace gui{
             return i;
         }
 
+        // bool handleScrollInput(InputEvent ev);
+
     protected:
         void redraw(Graphics&, bool = false) override;
         bool relayout() override;

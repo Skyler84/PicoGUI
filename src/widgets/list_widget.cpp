@@ -20,19 +20,23 @@ size_t ListWidget::addItemAt(Widget *w, size_t idx){
     int yOff = 0;
     w->setNextChild(nullptr);
     w->setParent(this);
-    if(m_children){
+    if(m_children && idx > 0){
         Widget *child = m_children;
         while(child->getNextChild() && i <= idx){
             ++i;
             child = child->getNextChild();
         }
+        w->setNextChild(w->getNextChild());
         child->setNextChild(w);
     }else{
+        w->setNextChild(m_children);
         m_children = w;
     }
 
     requiresRelayout();
     requiresRedraw();
+    printf("[LWIDG] added item at (%p, %d)\n", w, i);
+
 
     return i;
 }
@@ -53,16 +57,16 @@ Widget *ListWidget::removeItem(Widget* w){
     if(!w)
         return nullptr;
     Widget *child = m_children;
-    if(child == w){
+    if(m_children == w){
         m_children = child->getNextChild();
     }else{
-        size_t i = 0;
-        while(child->getNextChild() != w && child){
+        while(child && child->getNextChild() != w){
             child = child->getNextChild();
         }
         if(!child)
             return nullptr;
         //should ALWAYS be valid pointer as we checkd already?
+        //next is the one we want to remove
         Widget *tmp = child->getNextChild();
         assert(tmp);
         child->setNextChild(tmp->getNextChild());
@@ -72,6 +76,7 @@ Widget *ListWidget::removeItem(Widget* w){
     child->setParent(nullptr);
     requiresRelayout();
     requiresRedraw();
+    printf("[LWIDG] removed (%p)\n", child);
     return child;
 }
 
@@ -104,14 +109,11 @@ void ListWidget::setSelectedRow(size_t idx){
 }
 
 void ListWidget::redraw(Graphics &g, bool){
-    printf("[LWIDG] redraw()\n");
-    Widget *child, *nextchild = m_children;
+    // printf("[LWIDG] redraw()\n");
     auto mpos = getPos();
     auto msize = getSize();
     int i = 0;
-    while(nextchild){
-        child = nextchild;
-        nextchild = child->getNextChild();
+    for(Widget *child = m_children; child; child = child->getNextChild()){
         // child->setFocused()
         auto cpos = child->getPos();
         auto csize = child->getSize();
@@ -122,6 +124,7 @@ void ListWidget::redraw(Graphics &g, bool){
             continue;
         
         child->redraw(g);
+        // printf("[LWIDG] redrawn child (%p)\n", child);
     }
 }
 

@@ -27,7 +27,8 @@ target_sources(${NAME} INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}/src/widgets/text_widget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/widgets/qrcode_widget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/drivers/button.cpp
-    # ${CMAKE_CURRENT_LIST_DIR}/src/drivers/led.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/drivers/ir.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/drivers/led.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/drivers/rp2040/sio_pin.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/drivers/rp2040/gpio_pin.cpp
 )
@@ -51,4 +52,5 @@ include(drivers/button/button)
 target_link_libraries(${NAME} INTERFACE
     pico_display
     pico_explorer
+    hardware_gpio
 )

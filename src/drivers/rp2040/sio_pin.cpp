@@ -1,5 +1,7 @@
 #include "drivers/rp2040/sio_pin.hpp"
 
+#include "stdio.h"
+
 using namespace RP2040;
 
 SioPin *SioPin::s_firstPin = nullptr;
@@ -17,12 +19,19 @@ SioPin::~SioPin(){
     // *pinList = this;
 }
 
-void SioPin::init(){
-  gpio_init(get_pin());
-  gpio_set_pulls(get_pin(), 
-    getPolarity() == Polarity::ACTIVE_LOW, 
-    getPolarity() == Polarity::ACTIVE_HIGH);
-  gpio_set_irq_enabled_with_callback(get_pin(), GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE, true, SioPin::interrupt);
+void SioPin::init() {
+  uint pin = get_pin();
+  printf("SioPin::init() %d, %s\n", pin, getDirection()==GPIO_IN?"IN":"OUT");
+    GpioPin::init();
+    if(getDirection() == GPIO_IN){
+        gpio_set_pulls(get_pin(), 
+          getPolarity() == Polarity::ACTIVE_LOW, 
+          getPolarity() == Polarity::ACTIVE_HIGH);
+        gpio_set_irq_enabled_with_callback(pin, GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE, true, SioPin::interrupt);
+    } else {
+        gpio_set_drive_strength(pin, GPIO_DRIVE_STRENGTH_2MA);
+        put(0);
+    }
 }
 
 SioPin *SioPin::getSioPin(uint pin){
