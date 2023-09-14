@@ -47,7 +47,8 @@ target_include_directories(${NAME} PUBLIC ${PIMORONI_PICO_PATH}/drivers/rgbled/r
 target_include_directories(${NAME} PUBLIC ${PIMORONI_PICO_PATH}/drivers/button/button)
 # include(${PIMORONI_PICO_PATH}/drivers/st7789/st7789)
 
-target_link_libraries(${NAME} INTERFACE
+target_link_libraries(${NAME} PRIVATE
     pico_display
     pico_explorer
+    hardware_gpio
 )
