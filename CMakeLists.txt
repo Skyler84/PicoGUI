@@ -31,9 +31,9 @@ add_library(${NAME} STATIC
     ${CMAKE_CURRENT_LIST_DIR}/src/drivers/rp2040/gpio_pin.cpp
 )
 
-# target_include_directories(${NAME}_headers INTERFACE
-#     ${CMAKE_CURRENT_LIST_DIR}/include
-# )
+target_include_directories(${NAME} PUBLIC
+    ${CMAKE_CURRENT_LIST_DIR}/include
+)
 
 # Include required libraries
 # This assumes `pimoroni-pico` is stored alongside your project
