@@ -17,8 +17,7 @@ add_subdirectory(examples)
 
 set(NAME gui)
 
-add_library(${NAME} STATIC)
-target_sources(${NAME}
+add_library(${NAME} STATIC
     ${CMAKE_CURRENT_LIST_DIR}/src/drawable.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/view.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/view_controller.cpp
