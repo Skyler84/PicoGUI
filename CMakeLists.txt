@@ -1,17 +1,14 @@
 cmake_minimum_required(VERSION 3.12)
 
-# Change your executable name to something creative!
 set(PROJECT_NAME "LibGUI")
-
-include(pimoroni_pico_import.cmake)
-include(pico_sdk_import.cmake)
-
-# Gooey boilerplate
 project(${PROJECT_NAME} C CXX ASM)
+# Gooey boilerplate
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
+include(pico_sdk_import.cmake)
 pico_sdk_init()
+include(pimoroni_pico_import.cmake)
 
 add_subdirectory(examples)
 
@@ -37,20 +34,17 @@ target_include_directories(${NAME} PUBLIC
 
 # Include required libraries
 # This assumes `pimoroni-pico` is stored alongside your project
-target_include_directories(${NAME} PUBLIC ${PIMORONI_PICO_PATH}/common/pimoroni_i2c)
-target_include_directories(${NAME} PUBLIC ${PIMORONI_PICO_PATH}/common/pimoroni_bus)
-target_include_directories(${NAME} PUBLIC ${PIMORONI_PICO_PATH}/libraries/bitmap_fonts/bitmap_fonts)
-target_include_directories(${NAME} PUBLIC ${PIMORONI_PICO_PATH}/libraries/hershey_fonts/hershey_fonts)
-target_include_directories(${NAME} PUBLIC ${PIMORONI_PICO_PATH}/libraries/pico_explorer/pico_explorer)
-target_include_directories(${NAME} PUBLIC ${PIMORONI_PICO_PATH}/libraries/pico_display/pico_display)
-target_include_directories(${NAME} PUBLIC ${PIMORONI_PICO_PATH}/drivers/rgbled/rgbled)
-target_include_directories(${NAME} PUBLIC ${PIMORONI_PICO_PATH}/drivers/button/button)
+include(${PIMORONI_PICO_PATH}/common/pimoroni_i2c.cmake)
+include(${PIMORONI_PICO_PATH}/common/pimoroni_bus.cmake)
+include(${PIMORONI_PICO_PATH}/libraries/bitmap_fonts/bitmap_fonts.cmake)
+include(${PIMORONI_PICO_PATH}/libraries/hershey_fonts/hershey_fonts.cmake)
+include(${PIMORONI_PICO_PATH}/libraries/pico_explorer/pico_explorer.cmake)
+include(${PIMORONI_PICO_PATH}/libraries/pico_display/pico_display.cmake)
+include(${PIMORONI_PICO_PATH}/drivers/rgbled/rgbled.cmake)
+include(${PIMORONI_PICO_PATH}/drivers/button/button.cmake)
 # include(${PIMORONI_PICO_PATH}/drivers/st7789/st7789)
 
-target_link_libraries(${NAME} PRIVATE
+target_link_libraries(${NAME} PUBLIC
     pico_display
     pico_explorer
-    hardware_gpio
-    pico_stdlib
-    pico_stdio
 )
