@@ -17,8 +17,8 @@ add_subdirectory(examples)
 
 set(NAME gui)
 
-pico_add_library(${NAME})
-target_sources(${NAME} INTERFACE
+add_library(${NAME} STATIC)
+target_sources(${NAME}
     ${CMAKE_CURRENT_LIST_DIR}/src/drawable.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/view.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/view_controller.cpp
@@ -32,21 +32,21 @@ target_sources(${NAME} INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}/src/drivers/rp2040/gpio_pin.cpp
 )
 
-target_include_directories(${NAME}_headers INTERFACE
-    ${CMAKE_CURRENT_LIST_DIR}/include
-)
+# target_include_directories(${NAME}_headers INTERFACE
+#     ${CMAKE_CURRENT_LIST_DIR}/include
+# )
 
 # Include required libraries
 # This assumes `pimoroni-pico` is stored alongside your project
-include(common/pimoroni_i2c)
-include(common/pimoroni_bus)
-include(libraries/bitmap_fonts/bitmap_fonts)
-include(libraries/hershey_fonts/hershey_fonts)
-include(libraries/pico_explorer/pico_explorer)
-include(libraries/pico_display/pico_display)
-include(drivers/rgbled/rgbled)
-include(drivers/button/button)
-# include(drivers/st7789/st7789)
+target_include_directories(${NAME} PUBLIC ${PIMORONI_PICO_PATH}/common/pimoroni_i2c)
+target_include_directories(${NAME} PUBLIC ${PIMORONI_PICO_PATH}/common/pimoroni_bus)
+target_include_directories(${NAME} PUBLIC ${PIMORONI_PICO_PATH}/libraries/bitmap_fonts/bitmap_fonts)
+target_include_directories(${NAME} PUBLIC ${PIMORONI_PICO_PATH}/libraries/hershey_fonts/hershey_fonts)
+target_include_directories(${NAME} PUBLIC ${PIMORONI_PICO_PATH}/libraries/pico_explorer/pico_explorer)
+target_include_directories(${NAME} PUBLIC ${PIMORONI_PICO_PATH}/libraries/pico_display/pico_display)
+target_include_directories(${NAME} PUBLIC ${PIMORONI_PICO_PATH}/drivers/rgbled/rgbled)
+target_include_directories(${NAME} PUBLIC ${PIMORONI_PICO_PATH}/drivers/button/button)
+# include(${PIMORONI_PICO_PATH}/drivers/st7789/st7789)
 
 target_link_libraries(${NAME} INTERFACE
     pico_display
