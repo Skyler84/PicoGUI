@@ -51,4 +51,6 @@ target_link_libraries(${NAME} PRIVATE
     pico_display
     pico_explorer
     hardware_gpio
+    pico_stdlib
+    pico_stdio
 )
