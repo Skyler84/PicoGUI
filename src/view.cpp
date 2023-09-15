@@ -11,10 +11,11 @@ using namespace gui;
 Queue<View::TimerEvent> View::timer_events{32};
 
 View::View(View *parent) : 
-    Widget(parent, {0,0,get_default_display().width, get_default_display().height}), childView(nullptr){
+    Widget(parent, {0,0,get_default_display().width, get_default_display().height}), 
+    childView(nullptr),
+    m_backgroundInherited(true)
+{
     requiresRedraw();
-    if(parent)
-        setBackgroundColor(parent->getBackgroundColor());
 }
 
 View::~View(){
@@ -30,6 +31,15 @@ Graphics &View::get_default_graphics(){
 }
 Display &View::get_default_display(){
     return ViewController::get().get_default_display();
+}
+
+
+gui::Color View::getBackgroundColor() const { 
+    if (!m_backgroundInherited)
+        return m_backgroundColor;
+    if (getParentView())
+        return getParentView()->getBackgroundColor();
+    return ViewController::get().getBackgroundColor();
 }
 
 int View::start_timer(long timeout_us){

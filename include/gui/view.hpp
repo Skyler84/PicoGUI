@@ -23,13 +23,7 @@ namespace gui
             m_backgroundColor = c; 
             m_backgroundInherited = false;
         }
-        gui::Color getBackgroundColor() const { 
-            if (!m_backgroundInherited)
-                return m_backgroundColor;
-            if (getParentView())
-                return getParentView()->getBackgroundColor();
-            return ViewController::get().getBackgroundColor();
-        }
+        gui::Color getBackgroundColor() const;
         bool isBackgroundInherited() const { return m_backgroundInherited; }
         void inheritBackgroundColor() { m_backgroundInherited = true; }
     protected:
