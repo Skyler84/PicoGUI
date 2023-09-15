@@ -42,7 +42,7 @@ void TextWidget::redraw(Graphics& graphics, bool){
         clear(graphics, this->m_textColor);
         graphics.set_pen(ViewController::get().getBackgroundColor());
     }else{
-        clear(graphics);
+        clear(graphics, ViewController::get().getBackgroundColor());
         graphics.set_pen(this->m_textColor);
     }
     graphics.set_font(this->m_font);

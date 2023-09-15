@@ -35,10 +35,16 @@ Display &View::get_default_display(){
 
 
 gui::Color View::getBackgroundColor() const { 
-    if (!m_backgroundInherited)
+    DEBUG_PRINTF("getBackgroundColor() -> %d\n", m_backgroundColor);
+    if (!m_backgroundInherited) {
+        DEBUG_PRINTF("not inherited\n");
         return m_backgroundColor;
-    if (getParentView())
+    }
+    if (getParentView()){
+        DEBUG_PRINTF("inherited from parent %p\n", getParentView());
         return getParentView()->getBackgroundColor();
+    }
+    DEBUG_PRINTF("inherited from view controller\n");
     return ViewController::get().getBackgroundColor();
 }
 
@@ -86,17 +92,19 @@ void View::setWidget(gui::Widget *w) {
 void View::redraw(gui::Graphics&g, bool){
     if(!childWidgets)
         return;
+    gui::Color c = getBackgroundColor();
     if(needsRedrawing()){
-        clear(g);
+        clear(g, c);
         childWidgets->redraw(g);
         childWidgets->redrawDone();
         return;
     }
     if(!childWidgets->needsRedrawing() && !childWidgets->childNeedsRedrawing())
         return;
-    clear(g);
+    clear(g, c);
     childWidgets->redraw(g);
     childWidgets->redrawDone();
+    DEBUG_PRINTF("redraw complete\n");
 }
 
 bool View::relayout(){

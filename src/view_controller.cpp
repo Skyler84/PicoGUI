@@ -90,7 +90,7 @@ void ViewController::poll_event_loop(){
 gui::Color ViewController::getBackgroundColor() const{ 
     gui::Color c;
     c = this->current_view?
-        this->current_view->m_backgroundColor:
+        this->current_view->getBackgroundColor():
         0;
     return c;
 }
