@@ -19,8 +19,19 @@ namespace gui
         View(View* parent);
         ~View();
 
-        void setBackgroundColor(gui::Color c) { m_backgroundColor = c; }
-        gui::Color getBackgroundColor() const { return m_backgroundColor; }
+        void setBackgroundColor(gui::Color c) { 
+            m_backgroundColor = c; 
+            m_backgroundInherited = false;
+        }
+        gui::Color getBackgroundColor() const { 
+            if (!m_backgroundInherited)
+                return m_backgroundColor;
+            if (getParentView())
+                return getParentView()->getBackgroundColor();
+            return ViewController::get().getBackgroundColor();
+        }
+        bool isBackgroundInherited() const { return m_backgroundInherited; }
+        void inheritBackgroundColor() { m_backgroundInherited = true; }
     protected:
         gui::Graphics &get_default_graphics();
         gui::Display &get_default_display();
@@ -62,6 +73,7 @@ namespace gui
 
         View *childView;
         Widget *childWidgets = nullptr;
+        bool m_backgroundInherited;
         Color m_backgroundColor;
 
         enum TimerEventType{
